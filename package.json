@@ -4,19 +4,17 @@
     "description": "An npx set of tools to help packag and find problems inside Foundry VTT adventures.",
     "private": true,
     "bin": {
-        "extract": "./extract-packs.mjs",
+        "bin": "./extract-packs.mjs",
         "build": "./build.mjs",
         "link": "./link.mjs"
     },
     "author": "MrVauxs",
     "license": "ISC",
-    "devDependencies": {
+    "dependencies": {
         "@foundryvtt/foundryvtt-cli": "^1.0.3",
         "@types/prompts": "^2.4.9",
         "jsdom": "^25.0.1",
-        "prompts": "^2.4.2"
-    },
-    "dependencies": {
+        "prompts": "^2.4.2",
         "chalk": "^5.4.0"
     }
 }
