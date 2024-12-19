@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { extractPack } from "@foundryvtt/foundryvtt-cli";
-import { existsSync } from "fs";
+import { exists, existsSync } from "fs";
 import fs from "fs/promises";
 import path from "path";
 import { JSDOM } from 'jsdom';
@@ -29,6 +29,19 @@ for (const pack of packFolders) {
 }
 
 function fix(entry, key, parent) {
+    // Check if a scene has a thumbnail
+    if (key === "thumb") {
+        if (entry[key].startsWith("modules/")) {
+            const thumbPath = path.resolve(process.cwd(), entry[key]).replace(`modules/${moduleJSON.id}/`, "");
+            if (!existsSync(thumbPath)) {
+                error(`Thumbnail ${entry[key]} does not exist!`)
+            }
+        } else {
+            error(`Thumbnail "${entry[key]}" is not in the modules folder!`)
+        }
+    }
+
+
     // Check if a given image path exists
     if (key === "img" && entry[key].startsWith("modules/")) {
         const imgPath = path.resolve(process.cwd(), entry[key]).replace(`modules/${moduleJSON.id}/`, "");
