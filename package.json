@@ -4,7 +4,7 @@
     "description": "An npx set of tools to help packag and find problems inside Foundry VTT adventures.",
     "private": true,
     "bin": {
-        "bin": "./extract-packs.mjs",
+        "extract": "./extract-packs.mjs",
         "build": "./build.mjs",
         "link": "./link.mjs"
     },
