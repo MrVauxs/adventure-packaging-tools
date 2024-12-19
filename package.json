@@ -8,6 +8,11 @@
         "build": "./build.mjs",
         "link": "./link.mjs"
     },
+    "scripts": {
+        "extract": "node extract-packs.mjs",
+        "build": "node build.mjs",
+        "link": "node link.mjs"
+    },
     "author": "MrVauxs",
     "license": "ISC",
     "dependencies": {
