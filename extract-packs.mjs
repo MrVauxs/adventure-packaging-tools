@@ -5,15 +5,15 @@ import { existsSync } from "fs";
 import fs from "fs/promises";
 import path from "path";
 import { JSDOM } from 'jsdom';
-import moduleJSON from './module.json' with { type: "json" };
-import changeList from './changeList.json' with { type: "json" };
-import { warn, changed, error } from './utils';
+import { warn, changed, error } from './utils.mjs';
 
+const moduleJSON = JSON.parse(await fs.readFile(path.resolve(process.cwd(), 'module.json'), 'utf-8'));
 const outDir = path.resolve(process.cwd(), "build");
 const packsCompiled = path.resolve(outDir, "packs/");
 if (!existsSync(packsCompiled)) {
     console.error("Packs directory does not exist in the build");
 }
+
 
 const packFolders = await fs.readdir(packsCompiled);
 
@@ -103,6 +103,20 @@ function fixItems(items) {
     return items;
 }
 
+let changeList;
+try {
+    const changeListPath = path.resolve(process.cwd(), 'changeList.json');
+    changeList = JSON.parse(await fs.readFile(changeListPath, 'utf-8'));
+} catch (err) {
+    if (err.code === 'ENOENT') {
+        console.warn("Module changeList.json not found. Falling back to default changeList.");
+        const localChangeListPath = path.resolve(path.dirname(new URL(import.meta.url).pathname), 'changeList.json');
+        changeList = JSON.parse(await fs.readFile(localChangeListPath, 'utf-8'));
+    } else {
+        throw err;
+    }
+}
+
 function fixHTML(text, page) {
     const dom = new JSDOM(text)
 
@@ -145,7 +159,7 @@ for (const pack of packFolders) {
                         .replaceAll(" .\"", ".\"")
                         .replaceAll(/(\D)- /g, "$1")
                         .replaceAll(/Compendium\.heliana-core(.+)\]/g, (match, p1) => {
-                            console.warn("[CHANGED] Found a heliana-core tag! Replacing with wrong-module.")
+                            warn("Found a heliana-core tag! Replacing with wrong-module.")
                             return `Compendium.wrong-module${p1}]`
                         })
                         .replaceAll(/,"modifiedTime":\d+/g, "")
