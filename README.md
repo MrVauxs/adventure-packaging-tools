@@ -26,5 +26,5 @@ You can then add the following scripts.
 > [!note]
 > It is important to note that this entire repository is:
 > 1. Based on the [PF2e Starfinder Playtest](https://github.com/TikaelSol/starfinder-field-test/tree/main) repository code, which I thank for.
-> 2. Primarily made to aid for revitalizing the Heliiana's Guide to Monster Hunting modules, and thus contains various defaults made specifically for their books.
+> 2. Primarily made to aid for revitalizing the Heliana's Guide to Monster Hunting modules, and thus contains various defaults made specifically for their books.
 > 3. Easily forkable, letting you remedy the above point and change it to your own defaults and filters. All you will need to change is the `npm i` command to be your `github:username/repo-name`.
