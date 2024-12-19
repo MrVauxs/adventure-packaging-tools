@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { extractPack } from "@foundryvtt/foundryvtt-cli";
 import { existsSync } from "fs";
 import fs from "fs/promises";
