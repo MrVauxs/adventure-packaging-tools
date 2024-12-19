@@ -14,7 +14,6 @@ if (!existsSync(packsCompiled)) {
     console.error("Packs directory does not exist in the build");
 }
 
-
 const packFolders = await fs.readdir(packsCompiled);
 
 console.log("Cleaning packs");
@@ -30,6 +29,14 @@ for (const pack of packFolders) {
 }
 
 function fix(entry, key, parent) {
+    // Check if a given image path exists
+    if (key === "img" && entry[key].startsWith("modules/")) {
+        const imgPath = path.resolve(process.cwd(), entry[key]).replace(`modules/${moduleJSON.id}/`, "");
+        if (!existsSync(imgPath)) {
+            error(`Image ${entry[key]} does not exist!`)
+        }
+    }
+
     // Fix prototype tokens not matching actor names
     if (key === "prototypeToken") {
         if (entry[key].name !== entry.name) {
@@ -64,7 +71,6 @@ function fix(entry, key, parent) {
         entry["journal"] = entry["journal"].map((journal) => {
             journal.pages = journal.pages.map((page) => {
                 page.text.content = fixHTML(page.text.content, page)
-
                 return page
             })
 

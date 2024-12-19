@@ -1,6 +1,6 @@
 {
     "name": "adventure-packaging-tools",
-    "version": "1.0.",
+    "version": "1.0.0",
     "description": "An npx set of tools to help packag and find problems inside Foundry VTT adventures.",
     "private": true,
     "type": "module",
