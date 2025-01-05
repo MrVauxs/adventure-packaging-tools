@@ -29,6 +29,7 @@ for (const pack of packFolders) {
 }
 
 function fix(entry, key, parent) {
+    if (!entry[key]) return;
     // Check if a scene has a thumbnail
     if (key === "thumb") {
         if (entry[key].startsWith("modules/")) {
