@@ -44,8 +44,7 @@ compileMultiple(packFolders, "packs")
 const files = [
     "assets",
     "scripts",
-    "module.json",
-    // "adventureAssets"
+    "module.json"
 ];
 for (const file of files) {
     await fs.cp(file, path.resolve(outDir, file), { recursive: true });
