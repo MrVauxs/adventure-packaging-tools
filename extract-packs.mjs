@@ -92,6 +92,13 @@ function fix(entry, key, parent) {
         })
     }
 
+    if (key === "pages") {
+        entry["pages"] = entry["pages"].map((page) => {
+            page.text.content = fixHTML(page.text.content, page)
+            return page
+        })
+    }
+
     // Fix relative UUIDs to use [[/item]] syntax in D&D5e compendiums
     if (entry._stats?.systemId === "dnd5e") {
         if (key === "actors" && Array.isArray(entry["actors"])) {
