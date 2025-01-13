@@ -26,7 +26,6 @@ async function compileMultiple(packFolders, previous) {
             if (files.some(x => x.isDirectory())) {
                 await compileMultiple(files, `${previous}/${pack.name}`);
             } else {
-                console.log(previous)
                 const output = path.resolve(outDir, `${previous}/${pack.name}`);
                 if (!existsSync(output)) {
                     await fs.mkdir(output, { recursive: true });
