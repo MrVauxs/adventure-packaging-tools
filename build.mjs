@@ -17,13 +17,37 @@ if (existsSync(outDir)) {
 }
 
 // Build packs
-const packFolders = await fs.readdir("packs");
-for (const pack of packFolders) {
-    await compilePack(`packs/${pack}`, path.resolve(outDir, `packs/${pack}`));
+async function compileMultiple(packFolders, previous) {
+    for (const pack of packFolders) { // actors
+        if (pack.isDirectory()) {
+            const filepath = path.resolve(previous, pack.name);
+            const files = await fs.readdir(filepath, { withFileTypes: true });
+
+            if (files.some(x => x.isDirectory())) {
+                await compileMultiple(files, `${previous}/${pack.name}`);
+            } else {
+                console.log(previous)
+                const output = path.resolve(outDir, `${previous}/${pack.name}`);
+                if (!existsSync(output)) {
+                    await fs.mkdir(output, { recursive: true });
+                }
+                await compilePack(filepath, output);
+            }
+        }
+    }
 }
 
+const packFolders = await fs.readdir("packs", { withFileTypes: true }); // packs/actors
+compileMultiple(packFolders, "packs")
+
+
 // Copy files and folders to output
-const files = ["assets", "scripts", "module.json"];
+const files = [
+    "assets",
+    "scripts",
+    "module.json",
+    // "adventureAssets"
+];
 for (const file of files) {
     await fs.cp(file, path.resolve(outDir, file), { recursive: true });
 }
