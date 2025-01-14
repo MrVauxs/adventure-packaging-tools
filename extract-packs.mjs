@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { extractPack } from "@foundryvtt/foundryvtt-cli";
-import { exists, existsSync } from "fs";
+import { existsSync } from "fs";
 import fs from "fs/promises";
 import path from "path";
 import { JSDOM } from 'jsdom';
@@ -19,6 +19,9 @@ const packFolders = await fs.readdir(packsCompiled);
 console.log("Cleaning packs");
 
 for (const pack of packFolders) {
+    if (!existsSync(`packs/${pack}`)) {
+        await fs.mkdir(`packs/${pack}`)
+    }
     const files = await fs.readdir(`packs/${pack}`, { withFileTypes: true });
     const jsonFiles = files
         .filter((f) => f.isFile() && f.name.toLowerCase().endsWith(".json"))
