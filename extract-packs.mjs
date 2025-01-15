@@ -188,10 +188,6 @@ for (const pack of packFolders) {
                         .replaceAll(" .<", ".<")
                         .replaceAll(" .\"", ".\"")
                         .replaceAll(/(\D)- /g, "$1")
-                        .replaceAll(/Compendium\.heliana-core(.+)\]/g, (match, p1) => {
-                            warn("Found a heliana-core tag! Replacing with wrong-module.")
-                            return `Compendium.wrong-module${p1}]`
-                        })
                         .replaceAll(/,"modifiedTime":\d+/g, "")
                         .replaceAll(/,"lastModifiedBy":"\w+"/g, "")
                         .replaceAll("rotrr", "heliana-dab")
