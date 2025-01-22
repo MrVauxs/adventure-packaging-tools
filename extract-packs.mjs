@@ -34,6 +34,11 @@ for (const pack of packFolders) {
 function fix(entry, key, parent) {
     if (!entry[key]) return;
     // Check if a scene has a thumbnail
+    if (key === "source") {
+        delete entry[key].custom;
+        entry[key].book ??= Object.keys(moduleJSON.flags.dnd5e.sourceBooks)[0];
+    }
+
     if (key === "thumb") {
         if (entry[key].startsWith("modules/")) {
             const thumbPath = path.resolve(process.cwd(), entry[key]).replace(`modules/${moduleJSON.id}/`, "");
@@ -150,6 +155,10 @@ try {
 function fixHTML(text, page) {
     const dom = new JSDOM(text)
 
+    dom.window.document.querySelectorAll('a').forEach((x) =>
+        changed(`Found an anchor with the text: ${x.innerHTML}`)
+    )
+
     function changeTagName(el, newTagName) {
         const n = dom.window.document.createElement(newTagName);
         const attr = el.attributes;
@@ -190,7 +199,6 @@ for (const pack of packFolders) {
                         .replaceAll(/(\D)- /g, "$1")
                         .replaceAll(/,"modifiedTime":\d+/g, "")
                         .replaceAll(/,"lastModifiedBy":"\w+"/g, "")
-                        .replaceAll("rotrr", "heliana-dab")
                         .replaceAll(
                             /modules\/([a-z\-]+?)(?<!\/assets)\/(images|sounds)/g,
                             `modules/${moduleJSON.id}/assets/$2`
