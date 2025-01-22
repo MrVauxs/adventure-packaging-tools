@@ -33,12 +33,19 @@ for (const pack of packFolders) {
 
 function fix(entry, key, parent) {
     if (!entry[key]) return;
-    // Check if a scene has a thumbnail
-    if (key === "source") {
-        delete entry[key].custom;
-        entry[key].book ??= Object.keys(moduleJSON.flags.dnd5e.sourceBooks)[0];
+
+    if (key === "system") {
+        if (typeof entry[key].source === "string") {
+            entry[key].source = {
+                rules: "2024",
+                revision: 1
+            }
+        }
+        delete entry[key].source.custom;
+        entry[key].source.book = Object.keys(moduleJSON.flags.dnd5e.sourceBooks)[0];
     }
 
+    // Check if a scene has a thumbnail
     if (key === "thumb") {
         if (entry[key].startsWith("modules/")) {
             const thumbPath = path.resolve(process.cwd(), entry[key]).replace(`modules/${moduleJSON.id}/`, "");
@@ -155,9 +162,14 @@ try {
 function fixHTML(text, page) {
     const dom = new JSDOM(text)
 
-    dom.window.document.querySelectorAll('a').forEach((x) =>
-        changed(`Found an anchor with the text: ${x.innerHTML}`)
-    )
+    dom.window.document.querySelectorAll('a').forEach((anchor) => {
+        changed(`Removing anchor wrap with the text: ${anchor.innerHTML}`);
+        const parent = anchor.parentNode;
+        while (anchor.firstChild) {
+            parent.insertBefore(anchor.firstChild, anchor);
+        }
+        parent.removeChild(anchor);
+    })
 
     function changeTagName(el, newTagName) {
         const n = dom.window.document.createElement(newTagName);
@@ -204,6 +216,7 @@ for (const pack of packFolders) {
                             `modules/${moduleJSON.id}/assets/$2`
                         )
                         .replaceAll("heliana-core", moduleJSON.id)
+                        .replaceAll("wrong-module", moduleJSON.id)
                 )
 
                 fix(entry, key)
