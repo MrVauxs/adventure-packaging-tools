@@ -35,14 +35,20 @@ function fix(entry, key, parent) {
     if (!entry[key]) return;
 
     if (key === "system") {
-        if (typeof entry[key].source === "string") {
-            entry[key].source = {
-                rules: "2024",
-                revision: 1
+        if (entry[key].source) {
+            if (typeof entry[key].source === "string") {
+                entry[key].source = {
+                    rules: "2024",
+                    revision: 1
+                }
             }
+
+            if (entry[key]?.source?.custom) {
+                delete entry[key].source.custom;
+            }
+
+            entry[key].source.book = Object.keys(moduleJSON.flags.dnd5e.sourceBooks)[0];
         }
-        delete entry[key].source.custom;
-        entry[key].source.book = Object.keys(moduleJSON.flags.dnd5e.sourceBooks)[0];
     }
 
     // Check if a scene has a thumbnail
@@ -50,10 +56,10 @@ function fix(entry, key, parent) {
         if (entry[key].startsWith("modules/")) {
             const thumbPath = path.resolve(process.cwd(), entry[key]).replace(`modules/${moduleJSON.id}/`, "");
             if (!existsSync(thumbPath)) {
-                error(`Thumbnail ${entry[key]} does not exist!`)
+                error(`Thumbnail ${entry[key]} does not exist!`, `packs/${entry?._key?.split("!")[1]}/${entry.name}_${entry._id}.json`)
             }
         } else {
-            error(`Thumbnail "${entry[key]}" is not in the modules folder!`)
+            error(`Thumbnail "${entry[key]}" is not in the modules folder!`, `packs/${entry?._key?.split("!")[1]}/${entry.name}_${entry._id}.json`)
         }
     }
 
@@ -61,8 +67,8 @@ function fix(entry, key, parent) {
     // Check if a given image path exists
     if (key === "img" && entry[key].startsWith("modules/")) {
         const imgPath = path.resolve(process.cwd(), entry[key]).replace(`modules/${moduleJSON.id}/`, "");
-        if (!existsSync(imgPath)) {
-            error(`Image ${entry[key]} does not exist!`)
+        if (!existsSync(decodeURIComponent(imgPath))) {
+            error(`Image ${entry[key]} does not exist!`, `packs/${entry?._key?.split("!")[1]}/${entry.name}_${entry._id}.json`)
         }
     }
 
@@ -84,7 +90,7 @@ function fix(entry, key, parent) {
             const actor = parent.actors.find((val) => val._id && token.actorId && val._id === token.actorId)
 
             if (!actor) {
-                error(`"${entry.name}" scene inside ${parent.name} has a token ${entry?.name} without an actor!`)
+                error(`"${entry.name}" scene inside ${parent.name} has a token ${entry?.name} without an actor!`, `packs/${entry?._key?.split("!")[1]}/${entry.name}_${entry._id}.json`)
             }
 
             if (token.name !== actor?.prototypeToken.name) {
