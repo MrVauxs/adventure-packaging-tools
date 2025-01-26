@@ -214,7 +214,7 @@ for (const pack of packFolders) {
                         .replaceAll(" . ", ". ")
                         .replaceAll(" .<", ".<")
                         .replaceAll(" .\"", ".\"")
-                        .replaceAll(/(\D)- /g, "$1")
+                        .replaceAll(/(\S)- /g, "$1")
                         .replaceAll(/,"modifiedTime":\d+/g, "")
                         .replaceAll(/,"lastModifiedBy":"\w+"/g, "")
                         .replaceAll(
