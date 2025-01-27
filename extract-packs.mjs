@@ -145,6 +145,20 @@ function fixItems(items) {
                 changed(`Replacing relational UUID "${match}" to use [[/item]] syntax!`)
                 return `[[/item ${p1}]]`
             });
+
+        // Check for missing spell tags and wrap them in curly brackets
+        // Commented out due to how many errors it would throw due to 5e being 5e
+        /* if (changeList.missingTags) {
+            for (const tag of changeList.missingTags) {
+                // Create regex that matches the tag when not already in curly braces
+                const regex = new RegExp(`(?<!{)\\b${tag}\\b(?!})`, 'g');
+
+                if (regex.test(item.system.description.value)) {
+                    error(`Missing spell tag "${tag}" in ${item.name} item!`);
+                }
+            }
+        } */
+
         return item;
     })
 
@@ -166,6 +180,18 @@ try {
 }
 
 function fixHTML(text, page) {
+    // Check for missing spell tags and wrap them in curly brackets
+    if (changeList.missingTags) {
+        for (const [tag, uuid] of changeList.missingTags) {
+            // Create regex that matches the tag when not already in curly braces
+            const regex = new RegExp(`(?<!{)\\b${tag}\\b(?!['}’])`, 'g');
+
+            if (regex.test(text)) {
+                warn(`Possible missing UUID tag around "${tag}" in ${page.name} page!`);
+            }
+        }
+    }
+
     const dom = new JSDOM(text)
 
     dom.window.document.querySelectorAll('a').forEach((anchor) => {
