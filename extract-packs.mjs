@@ -195,7 +195,9 @@ function fixHTML(text, page) {
     const dom = new JSDOM(text)
 
     dom.window.document.querySelectorAll('a').forEach((anchor) => {
-        changed(`Removing anchor wrap with the text: ${anchor.innerHTML}`);
+        if (anchor.href !== "" && anchor.href !== "#") return;
+
+        changed(`Removing empty ("" or "#") anchor wrap with the text: ${anchor.innerHTML}`);
         const parent = anchor.parentNode;
         while (anchor.firstChild) {
             parent.insertBefore(anchor.firstChild, anchor);
