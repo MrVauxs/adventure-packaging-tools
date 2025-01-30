@@ -69,6 +69,9 @@ function fix(entry, key, parent) {
         const imgPath = path.resolve(process.cwd(), entry[key]).replace(`modules/${moduleJSON.id}/`, "");
         if (!existsSync(decodeURIComponent(imgPath))) {
             error(`Image ${entry[key]} does not exist!`, `packs/${entry?._key?.split("!")[1]}/${entry.name}_${entry._id}.json`)
+            if (!entry[key].includes(moduleJSON.id)) {
+                entry[key] = entry[key].replace(/modules\/[a-z\-]+?\//g, `modules/${moduleJSON.id}/`);
+            }
         }
     }
 
