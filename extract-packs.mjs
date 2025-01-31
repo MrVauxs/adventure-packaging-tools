@@ -90,10 +90,10 @@ function fix(entry, key, parent) {
     // Fix token names not matching actor names
     if (key === "tokens") {
         entry["tokens"] = entry["tokens"].map((token) => {
-            const actor = parent.actors.find((val) => val._id && token.actorId && val._id === token.actorId)
+            const actor = parent?.actors?.find((val) => val._id && token.actorId && val._id === token.actorId)
 
             if (!actor) {
-                error(`"${entry.name}" scene inside ${parent.name} has a token ${entry?.name} without an actor!`, `packs/${entry?._key?.split("!")[1]}/${entry.name}_${entry._id}.json`)
+                error(`"${entry?.name}" scene inside ${parent?.name} has a token ${entry?.name} without an actor!`, `packs/${entry?._key?.split("!")[1]}/${entry?.name}_${entry?._id}.json`)
             }
 
             if (token.name !== actor?.prototypeToken.name) {
