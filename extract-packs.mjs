@@ -254,6 +254,7 @@ for (const pack of packFolders) {
                         )
                         .replaceAll("heliana-core", moduleJSON.id)
                         .replaceAll("wrong-module", moduleJSON.id)
+                        .replaceAll(/style=\\"box-sizing:border-box;user-select:text.+?\\"/g, "")
                 )
 
                 fix(entry, key)
