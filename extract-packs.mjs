@@ -137,14 +137,18 @@ function fix(entry, key, parent) {
             entry["items"] = fixItems(entry["items"])
         }
     }
+
+    if (key === "_key" && entry[key].includes("items")) {
+        entry = fixItems([entry])[0]
+    }
 }
 
 function fixItems(items) {
     items = items.map(item => {
         if (!item.system?.description?.value) return item;
 
-        item.system.description.value = item.system.description.value
-            .replaceAll(/\@UUID\[\.(\w+)\]/g, (match, p1) => {
+        item.system.description.value = fixHTML(item.system.description.value, item).replaceAll(
+            /\@UUID\[\.(\w+)\]/g, (match, p1) => {
                 changed(`Replacing relational UUID "${match}" to use [[/item]] syntax!`)
                 return `[[/item ${p1}]]`
             });
@@ -198,7 +202,7 @@ function fixHTML(text, page) {
     const dom = new JSDOM(text)
 
     dom.window.document.querySelectorAll('a').forEach((anchor) => {
-        if (anchor.href !== "" && anchor.href !== "#" && !anchor.href.includes(".html")) return;
+        if (anchor.href !== "" && anchor.href !== "#" && !anchor.href.includes(".html") && !anchor.href.includes("5etools")) return;
 
         changed(`Removing empty ("" or "#") anchor wrap with the text: ${anchor.innerHTML}`);
         const parent = anchor.parentNode;
